@@ -1,27 +1,22 @@
-"use client";
-import React from "react";
-import { renderToString } from "react-dom/server";
-import { Avatar } from "../ui/avatar";
-import { AiOutlineTool, AiOutlineWarning } from "react-icons/ai";
-import { CgSpinner } from "react-icons/cg";
-import { BsLightningCharge } from "react-icons/bs";
-import { Message } from "ai";
-import { Grid } from "react-loader-spinner";
-import { cn } from "@/lib/utils";
+'use client'
+import { cn } from '@/lib/utils'
+import { Message } from 'ai'
+import { Grid } from 'react-loader-spinner'
+import { Avatar } from '../ui/avatar'
 
 export default function Bubble({
   message,
   loading = false,
 }: {
-  message: Message;
-  loading?: boolean;
+  message: Message
+  loading?: boolean
 }) {
   return (
     <div
       key={message.id}
       className="flex gap-3 my-4 text-gray-600 text-sm flex-1"
     >
-      {message.role === "user" && (
+      {message.role === 'user' && (
         <Avatar className="w-8 h-8">
           <div className="rounded-full bg-gray-100 border p-1">
             <svg
@@ -38,13 +33,13 @@ export default function Bubble({
           </div>
         </Avatar>
       )}
-      {message.role === "assistant" && (
+      {message.role === 'assistant' && (
         <Avatar className="w-8 h-8">
           {/* <AvatarFallback>M</AvatarFallback> */}
           <div
             className={cn(
-              "rounded-full bg-gray-100 border p-1",
-              loading && "animate-pulse"
+              'rounded-full bg-gray-100 border p-1',
+              loading && 'animate-pulse'
             )}
           >
             <svg
@@ -68,54 +63,9 @@ export default function Bubble({
       )}
       <p className="leading-relaxed">
         <span className="block font-bold text-gray-700">
-          {message.role === "user" ? "You" : "AI"}{" "}
+          {message.role === 'user' ? 'Bạn' : 'AI'}{' '}
         </span>
-        {!loading && (
-          <span
-            dangerouslySetInnerHTML={{
-              __html: message.content.endsWith("|>")
-                ? message.content
-                    .replaceAll(
-                      `<|loading_tools|>`,
-                      renderToString(
-                        <div className="my-2 flex items-center gap-1">
-                          <CgSpinner className="animate-spin" size={20} />
-                          <span className="">
-                              Loading tools...
-                            </span>
-                        </div>
-                      )
-                    )
-                    .replaceAll(
-                      `<|tool_error|>`,
-                      renderToString(<AiOutlineWarning size={20} />)
-                    )
-                : message.content
-                    .replaceAll(`<|tool_error|>`, "")
-                    .replaceAll(
-                      /\<\|tool_called[\s\S]*\$\$/g,
-                      renderToString(
-                        <>
-                          <div className="my-2 flex flex-row items-center">
-                            {message.content.split("$$")[2] === "false" ? (
-                              <AiOutlineTool size={20} />
-                            ) : (
-                              <BsLightningCharge
-                                className="ms-mr-1 ms-fill-yellow-400"
-                                size={18}
-                              />
-                            )}
-                            <span className="ml-1">
-                              {message.content.split("$$")[1]}
-                            </span>
-                          </div>
-                        </>
-                      )
-                    )
-                    .replaceAll(`<|loading_tools|>`, ""),
-            }}
-          />
-        )}
+        {message.content}
         {loading && (
           <Grid
             height={12}
@@ -128,5 +78,5 @@ export default function Bubble({
         )}
       </p>
     </div>
-  );
+  )
 }
